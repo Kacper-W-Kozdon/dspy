@@ -15,7 +15,6 @@ class Unify(LM, UnifyClient):
         api_key=None,
         stream: Optional[bool] = False,
         system_prompt: Optional[str] = None,
-        n: int = 1,
         **kwargs,
     ):
         self.stream = stream
@@ -29,7 +28,6 @@ class Unify(LM, UnifyClient):
             "top_p": 1,
             "frequency_penalty": 0,
             "presence_penalty": 0,
-            "n": n,
             **kwargs,
         }
         self.kwargs["endpoint"] = model
