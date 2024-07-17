@@ -60,14 +60,11 @@ class LM(ABC):
                     "Sagemaker",
                     "premai",
                     "tensorrt_llm",
+                    "unify",
                 ):
                     printed.append((prompt, x["response"]))
                 elif provider == "anthropic":
-                    blocks = [
-                        {"text": block.text}
-                        for block in x["response"].content
-                        if block.type == "text"
-                    ]
+                    blocks = [{"text": block.text} for block in x["response"].content if block.type == "text"]
                     printed.append((prompt, blocks))
                 elif provider == "cohere":
                     printed.append((prompt, x["response"].text))
@@ -106,6 +103,8 @@ class LM(ABC):
                 "tensorrt_llm",
             ):
                 text = choices
+            elif provider == "unify":
+                text = " " + choices["choices"][0]["message"]["content"]
             elif provider == "openai" or provider == "ollama":
                 text = " " + self._get_choice_text(choices[0]).strip()
             elif provider == "groq":
@@ -122,7 +121,8 @@ class LM(ABC):
 
             if len(choices) > 1 and isinstance(choices, list):
                 printing_value += self.print_red(
-                    f" \t (and {len(choices)-1} other completions)", end="",
+                    f" \t (and {len(choices)-1} other completions)",
+                    end="",
                 )
 
             printing_value += "\n\n\n"
