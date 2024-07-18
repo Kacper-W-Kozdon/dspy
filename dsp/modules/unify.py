@@ -1,5 +1,6 @@
 import logging
-from typing import Any, Optional
+from collections.abc import Iterable
+from typing import Any, Optional, Union
 
 from unify.clients import Unify as UnifyClient
 
@@ -65,13 +66,15 @@ class Unify(LM, UnifyClient):
 
         logging.debug(f"Settings Dict: {settings_dict}")
 
-        response_string: str = self.generate(
+        response_string: Union[str, Iterable[str]] = self.generate(
             messages=settings_dict["messages"],
             stream=settings_dict["stream"],
             temperature=kwargs["temperature"],
             max_tokens=kwargs["max_tokens"],
         )
 
+        if isinstance(response_string, (list, tuple)):
+            response_string = "".join(response_string)
         response: dict = {"choices": [{"message": {"content": response_string}}]}  # response with choices
 
         if response_string not in [None, "", " "]:
